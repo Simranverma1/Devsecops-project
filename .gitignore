@@ -1,0 +1,13 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.zip
+
+# Jenkins
+jenkins_home/
+
+# OS
+.DS_Store
+Thumbs.db
