@@ -19,8 +19,15 @@ sh './ci-scripts/run_trivy.sh terraform trivy_report.json || true'
 sh 'ls -la'
 }
 post {
-always { archiveArtifacts artifacts: 'trivy_report.json', fingerprint: true }
-}
+  always {
+    script {
+      if (fileExists('trivy_report.json')) {
+        archiveArtifacts artifacts: 'trivy_report.json', fingerprint: true
+      } else {
+        echo 'Trivy report missing, skipping archive'
+      }
+    }
+  }
 }
 
 
