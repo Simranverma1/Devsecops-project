@@ -4,13 +4,13 @@ set -euo pipefail
 TARGET_DIR=${1:-terraform}
 OUT=${2:-trivy_report.json}
 
-echo "Running Trivy config scan on $TARGET_DIR -> $OUT"
+echo "Running Trivy IaC scan..."
 
-# Use Trivy installed in the Jenkins container / agent
-trivy config --format json -o "$OUT" "$TARGET_DIR" || true
+trivy config "$TARGET_DIR" -f json -o "$OUT" || true
 
 if [ -f "$OUT" ]; then
   echo "Trivy report generated: $OUT"
 else
-  echo "WARNING: Trivy report not generated"
+  echo "Trivy report not generated"
 fi
+
