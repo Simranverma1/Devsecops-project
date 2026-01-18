@@ -4,10 +4,13 @@ set -euo pipefail
 TARGET_DIR=${1:-terraform}
 OUT=${2:-trivy_report.json}
 
-# run Trivy using Docker (requires Docker socket mounted in Jenkins)
-docker run --rm \
-  -v "$(pwd)":/data \
-  aquasec/trivy:latest \
-  iac --format json --output /data/"$OUT" /data/"$TARGET_DIR" || true
+echo "Running Trivy config scan on $TARGET_DIR -> $OUT"
 
-echo "Trivy IaC scan done -> $OUT"
+# Use Trivy installed in the Jenkins container / agent
+trivy config --format json -o "$OUT" "$TARGET_DIR" || true
+
+if [ -f "$OUT" ]; then
+  echo "Trivy report generated: $OUT"
+else
+  echo "WARNING: Trivy report not generated"
+fi
